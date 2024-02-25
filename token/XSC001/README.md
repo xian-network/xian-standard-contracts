@@ -13,14 +13,14 @@ The `XSC001` contract includes mechanisms for:
 
 ## Functions
 
-### `@construct def seed()`
+### `def seed()`
 
 This function is called upon contract creation and initializes the contract's state. It sets the initial token balance for the creator and establishes basic token metadata such as the token name, symbol, logo URL, website, and operator.
 
 **Parameters:**
 - None
 
-### `@export def change_metadata(key: str, value: Any)`
+### `def change_metadata(key: str, value: Any)`
 
 Allows the operator to update the metadata of the token.
 
@@ -28,7 +28,7 @@ Allows the operator to update the metadata of the token.
 - `key`: The metadata key to update (e.g., 'token_name', 'token_symbol').
 - `value`: The new value for the specified key.
 
-### `@export def transfer(amount: float, to: str)`
+### `def transfer(amount: float, to: str)`
 
 Enables token holders to transfer tokens to another account.
 
@@ -36,7 +36,7 @@ Enables token holders to transfer tokens to another account.
 - `amount`: The amount of tokens to be transferred.
 - `to`: The recipient's address.
 
-### `@export def approve(amount: float, to: str)`
+### `def approve(amount: float, to: str)`
 
 Allows a token holder to approve another account to spend a specified amount of tokens on their behalf.
 
@@ -44,7 +44,7 @@ Allows a token holder to approve another account to spend a specified amount of 
 - `amount`: The amount of tokens to be approved.
 - `to`: The address of the account that is being approved to spend tokens.
 
-### `@export def transfer_from(amount: float, to: str, main_account: str)`
+### `def transfer_from(amount: float, to: str, main_account: str)`
 
 Enables an approved account to transfer tokens on behalf of the token holder.
 
