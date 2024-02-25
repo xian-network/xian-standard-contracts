@@ -24,6 +24,7 @@ def change_metadata(key: str, value: Any):
 def transfer(amount: float, to: str):
     assert amount > 0, 'Cannot send negative balances!'
     assert balances[ctx.caller] >= amount, 'Not enough coins to send!'
+    assert not to.startswith('0x'), 'Invalid address!'
 
     balances[ctx.caller] -= amount
     balances[to] += amount
@@ -45,6 +46,7 @@ def transfer_from(amount: float, to: str, main_account: str):
     assert balances[main_account, ctx.caller] >= amount, 'Not enough coins approved to send! You have {} and are trying to spend {}'\
         .format(balances[main_account, ctx.caller], amount)
     assert balances[main_account] >= amount, 'Not enough coins to send!'
+    assert not to.startswith('0x'), 'Invalid address!'
 
     balances[main_account, ctx.caller] -= amount
     balances[main_account] -= amount
