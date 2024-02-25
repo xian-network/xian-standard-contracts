@@ -53,7 +53,6 @@ Enables an approved account to transfer tokens on behalf of the token holder.
 - `to`: The recipient's address.
 - `main_account`: The address of the token holder who has approved the sender to spend tokens on their behalf.
 
-
 ## Contact
 
 For further assistance or to report issues, please open an issue in the main repository or contact the project maintainers directly.

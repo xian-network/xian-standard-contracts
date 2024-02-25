@@ -19,3 +19,7 @@ Each contract in this repository follows a specific naming convention and standa
 - **Token Contract (XSC001)**
   - Location: `token/XSC001`
   - Description: This contract implements a basic token system, allowing for token transfer, approval mechanisms, and metadata management.
+
+## Contact
+
+For further assistance or to report issues, please open an issue in the repository or contact the project maintainers directly.
