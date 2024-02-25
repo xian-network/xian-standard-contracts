@@ -1,6 +1,6 @@
 # Standardized Smart Contracts for Xian Blockchain
 
-Welcome to the official repository for standardized smart contracts on the Xian blockchain. This repository hosts a collection of foundational smart contracts developed in Contracting, the native smart contract programming language for Xian. These contracts are designed to provide a robust framework for building decentralized applications (dApps) and services on the Xian network.
+Welcome to the official repository for standardized smart contracts on the Xian blockchain. This repository hosts a collection of foundational smart contracts developed in Contracting (a subset of Python), the native smart contract programming language for Xian. These contracts are designed to provide a robust framework for building decentralized applications (dApps) and services on the Xian network.
 
 ## Introduction
 
