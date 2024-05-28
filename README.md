@@ -1,6 +1,6 @@
 # Standardized Smart Contracts for Xian Blockchain
 
-Welcome to the official repository for standardized smart contracts on the Xian blockchain. This repository hosts a collection of foundational smart contracts developed in Contracting (a subset of Python), the native smart contract programming language for Xian. These contracts are designed to provide a robust framework for building decentralized applications (dApps) and services on the Xian network.
+Welcome to the official repository for standardized smart contracts on the Xian blockchain. This repository hosts a collection of foundational smart contracts developed in [contracting](https://github.com/xian-network/xian-contracting) (a subset of Python), the native smart contract programming language for Xian. These contracts are designed to provide a robust framework for building decentralized applications (dApps) and services on the Xian network.
 
 ## Introduction
 
@@ -8,18 +8,12 @@ The Xian blockchain is dedicated to offering a scalable, efficient, and user-fri
 
 ## Contract Standards
 
-Each contract in this repository follows a specific naming convention and standardization process to ensure consistency and quality. The first standardized contract, a token contract, is named `XSC001` and is located in the `token/XSC001` directory.
+Each contract in this repository follows a specific naming convention and standardization process to ensure consistency and quality.
 
 ### Naming Convention
 
-- **XSC###**: The prefix "XSC" stands for Xian Standard Contract, followed by a numerical identifier indicating the sequence of the standard.
-
-### Available Contracts
-
-- **Token Contract (XSC001)**
-  - Location: `token/XSC001`
-  - Description: This contract implements a basic token system, allowing for token transfer, approval mechanisms, and metadata management.
+- **XSC####**: The prefix "XSC" stands for Xian Standard Contract, followed by a numerical identifier indicating the sequence of the standard.
 
 ## Contact
 
-For further assistance or to report issues, please open an issue in the repository or contact the project maintainers directly.
+For further assistance or to report issues or propose feature requests, please open an issue in the repository or contact the project maintainers directly.
