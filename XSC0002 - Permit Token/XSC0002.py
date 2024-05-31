@@ -1,8 +1,9 @@
 balances = Hash(default_value=0)
-permits = Hash()
 metadata = Hash()
+# XSC002
+permits = Hash()
 
-# XST001
+# XSC001
 
 @construct
 def seed():
@@ -52,11 +53,18 @@ def transfer_from(amount: float, to: str, main_account: str):
 
     return f"Sent {amount} to {to} from {main_account}"
 
-# XST002
 
 @export
-def permit(owner: str, spender: str, value: float, deadline: dict, signature: str):
-    permit_msg = construct_permit_msg(owner, spender, value, deadline)
+def balance_of(address: str):
+    return balances[address]
+
+
+# XSC002
+
+@export
+def permit(owner: str, spender: str, value: float, deadline: str, signature: str):
+    deadline = strptime_ymdhms(deadline)
+    permit_msg = construct_permit_msg(owner, spender, value, str(deadline))
     permit_hash = hashlib.sha3(permit_msg)
 
     assert permits[permit_hash] is None, 'Permit can only be used once.'
@@ -69,5 +77,10 @@ def permit(owner: str, spender: str, value: float, deadline: dict, signature: st
     return f"Permit granted for {value} to {spender} from {owner}"
 
 
-def construct_permit_msg(owner: str, spender: str, value: float, deadline: dict):
+def construct_permit_msg(owner: str, spender: str, value: float, deadline: str):
     return f"{owner}:{spender}:{value}:{deadline}:{ctx.this}"
+
+
+def strptime_ymdhms(date_string: str) -> datetime.datetime:
+    return datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
+

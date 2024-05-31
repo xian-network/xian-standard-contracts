@@ -1,4 +1,3 @@
-
 balances = Hash(default_value=0)
 
 metadata = Hash()
@@ -51,3 +50,8 @@ def transfer_from(amount: float, to: str, main_account: str):
     balances[to] += amount
 
     return f"Sent {amount} to {to} from {main_account}"
+
+
+@export
+def balance_of(address: str):
+    return balances[address]

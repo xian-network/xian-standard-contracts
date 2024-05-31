@@ -92,7 +92,7 @@ class TestCurrencyContract(unittest.TestCase):
         self.assertEqual(sys_balance, 999_900)
         self.assertEqual(remaining_allowance, 100)
 
-    # XST002 / Permit Tests
+    # XSC002 / Permit Tests
 
     # Helper Functions
 
@@ -172,7 +172,7 @@ class TestCurrencyContract(unittest.TestCase):
             self.currency.permit(owner=public_key, spender=spender, value=value, deadline=str(deadline), signature=signature)
         self.assertIn('Permit can only be used once', str(context.exception))
 
-    # XST003 / Streaming Payments
+    # XSC003 / Streaming Payments
 
     # Helper Functions
 

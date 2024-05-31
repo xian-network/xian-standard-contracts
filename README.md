@@ -14,6 +14,10 @@ Each contract in this repository follows a specific naming convention and standa
 
 - **XSC####**: The prefix "XSC" stands for Xian Standard Contract, followed by a numerical identifier indicating the sequence of the standard.
 
+### Testing
+
+- See the [contract-dev-environment](https://github.com/xian-network/contract-dev-environment) repository for information on how to test the contracts.
+
 ## Contact
 
 For further assistance or to report issues or propose feature requests, please open an issue in the repository or contact the project maintainers directly.

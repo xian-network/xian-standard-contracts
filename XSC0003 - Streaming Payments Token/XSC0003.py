@@ -1,12 +1,12 @@
 balances = Hash(default_value=0)
 metadata = Hash()
-# XST002
+# XSC002
 permits = Hash()
-# XST003
+# XSC003
 streams = Hash()
 
 
-# XST001
+# XSC001
 
 @construct
 def seed():
@@ -62,7 +62,7 @@ def balance_of(address: str):
     return balances[address]
 
 
-# XST002 / Permit
+# XSC002 / Permit
 
 @export
 def permit(owner: str, spender: str, value: float, deadline: str, signature: str):
@@ -84,7 +84,7 @@ def construct_permit_msg(owner: str, spender: str, value: float, deadline: str):
     return f"{owner}:{spender}:{value}:{deadline}:{ctx.this}"
 
 
-# XST003 / Streaming Payments
+# XSC003 / Streaming Payments
 
 
 SENDER_KEY = "sender"

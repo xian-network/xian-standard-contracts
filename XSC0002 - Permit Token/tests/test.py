@@ -10,7 +10,7 @@ class TestCurrencyContract(unittest.TestCase):
         self.client = ContractingClient()
         self.client.flush()
 
-        with open("token_xst002.py") as f:
+        with open("XSC002.py") as f:
             code = f.read()
             self.client.submit(code, name="currency")
 
@@ -69,7 +69,7 @@ class TestCurrencyContract(unittest.TestCase):
         self.assertEqual(remaining_allowance, 100)
 
 
-    # XST002 / Permit Tests
+    # XSC002 / Permit Tests
 
 
     # Helper Functions
@@ -89,24 +89,38 @@ class TestCurrencyContract(unittest.TestCase):
 
     # Permit Tests
 
+
+    # Helper Functions
+
+    def fund_wallet(self, funder, spender, amount):
+        self.currency.transfer(amount=100, to=spender, signer=funder)
+
+    def construct_permit_msg(self, owner: str, spender: str, value: float, deadline: dict):
+        return f"{owner}:{spender}:{value}:{deadline}:currency"
+
+    def create_deadline(self, minutes=1):
+        d = datetime.datetime.now() + datetime.timedelta(minutes=minutes)
+        return Datetime(d.year, d.month, d.day, hour=d.hour, minute=d.minute)
+
+    # Permit Tests
+
     def test_permit_valid(self):
-        # GIVEN
+        # GIVEN a valid permit setup
         private_key = 'ed30796abc4ab47a97bfb37359f50a9c362c7b304a4b4ad1b3f5369ecb6f7fd8'
         wallet = Wallet(private_key)
         public_key = wallet.public_key
-        deadline = self.create_deadline()
+        deadline = str(self.create_deadline())
         spender = "some_spender"
         value = 100
         msg = self.construct_permit_msg(public_key, spender, value, deadline)
         signature = wallet.sign_msg(msg)
-        # WHEN
+        # WHEN the permit is granted
         response = self.currency.permit(owner=public_key, spender=spender, value=value, deadline=deadline, signature=signature)
-        # THEN
+        # THEN the response should indicate success
         self.assertIn("Permit granted", response)
 
-
     def test_permit_expired(self):
-        # GIVEN
+        # GIVEN a permit setup with an expired deadline
         private_key = 'ed30796abc4ab47a97bfb37359f50a9c362c7b304a4b4ad1b3f5369ecb6f7fd8'
         wallet = Wallet(private_key)
         public_key = wallet.public_key
@@ -115,15 +129,14 @@ class TestCurrencyContract(unittest.TestCase):
         value = 100
         msg = self.construct_permit_msg(public_key, spender, value, deadline)
         signature = wallet.sign_msg(msg)
-        # WHEN
+        # WHEN the permit is attempted
+        # THEN it should fail due to expiration
         with self.assertRaises(Exception) as context:
-            self.currency.permit(owner=public_key, spender=spender, value=value, deadline=deadline, signature=signature)
-        # THEN
+            self.currency.permit(owner=public_key, spender=spender, value=value, deadline=str(deadline), signature=signature)
         self.assertIn('Permit has expired', str(context.exception))
 
-
     def test_permit_invalid_signature(self):
-        # GIVEN
+        # GIVEN a permit setup with an invalid signature
         private_key = 'ed30796abc4ab47a97bfb37359f50a9c362c7b304a4b4ad1b3f5369ecb6f7fd8'
         wallet = Wallet(private_key)
         public_key = wallet.public_key
@@ -132,15 +145,14 @@ class TestCurrencyContract(unittest.TestCase):
         value = 100
         msg = self.construct_permit_msg(public_key, spender, value, deadline)
         signature = wallet.sign_msg(msg + "tampered")
-        # WHEN
+        # WHEN the permit is attempted
+        # THEN it should fail due to invalid signature
         with self.assertRaises(Exception) as context:
-            self.currency.permit(owner=public_key, spender=spender, value=value, deadline=deadline, signature=signature)
-        # THEN
+            self.currency.permit(owner=public_key, spender=spender, value=value, deadline=str(deadline), signature=signature)
         self.assertIn('Invalid signature', str(context.exception))
 
-
     def test_permit_double_spending(self):
-        # GIVEN
+        # GIVEN a permit setup with a double spending attempt
         private_key = 'ed30796abc4ab47a97bfb37359f50a9c362c7b304a4b4ad1b3f5369ecb6f7fd8'
         wallet = Wallet(private_key)
         public_key = wallet.public_key
@@ -149,11 +161,11 @@ class TestCurrencyContract(unittest.TestCase):
         value = 100
         msg = self.construct_permit_msg(public_key, spender, value, deadline)
         signature = wallet.sign_msg(msg)
-        self.currency.permit(owner=public_key, spender=spender, value=value, deadline=deadline, signature=signature)
-        # WHEN
+        self.currency.permit(owner=public_key, spender=spender, value=value, deadline=str(deadline), signature=signature)
+        # WHEN the permit is used again
+        # THEN it should fail due to double spending
         with self.assertRaises(Exception) as context:
-            self.currency.permit(owner=public_key, spender=spender, value=value, deadline=deadline, signature=signature)
-        # THEN
+            self.currency.permit(owner=public_key, spender=spender, value=value, deadline=str(deadline), signature=signature)
         self.assertIn('Permit can only be used once', str(context.exception))
 
 
