@@ -10,7 +10,7 @@ class TestCurrencyContract(unittest.TestCase):
         self.client = ContractingClient()
         self.client.flush()
 
-        with open("XSC002.py") as f:
+        with open("XSC0002.py") as f:
             code = f.read()
             self.client.submit(code, name="currency")
 
@@ -117,7 +117,8 @@ class TestCurrencyContract(unittest.TestCase):
         # WHEN the permit is granted
         response = self.currency.permit(owner=public_key, spender=spender, value=value, deadline=deadline, signature=signature)
         # THEN the response should indicate success
-        self.assertIn("Permit granted", response)
+        approval_value = self.currency.balances[public_key, spender]
+        self.assertEqual(approval_value, value)
 
     def test_permit_expired(self):
         # GIVEN a permit setup with an expired deadline

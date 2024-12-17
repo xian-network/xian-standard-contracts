@@ -1,9 +1,10 @@
 balances = Hash(default_value=0)
 metadata = Hash()
-# XSC002
 permits = Hash()
 
-# XSC001
+TransferEvent = LogEvent(event="Transfer", params={"from":{'type':str, 'idx':True}, "to": {'type':str, 'idx':True}, "amount": {'type':(int, float, decimal)}})
+ApproveEvent = LogEvent(event="Approve", params={"from":{'type':str, 'idx':True}, "to": {'type':str, 'idx':True}, "amount": {'type':(int, float, decimal)}})
+
 
 @construct
 def seed():
@@ -30,15 +31,14 @@ def transfer(amount: float, to: str):
     balances[ctx.caller] -= amount
     balances[to] += amount
 
-    return f"Sent {amount} to {to}"
-
+    TransferEvent({"from": ctx.caller, "to": to, "amount": amount})
 
 @export
 def approve(amount: float, to: str):
     assert amount > 0, 'Cannot send negative balances!'
     balances[ctx.caller, to] += amount
 
-    return f"Approved {amount} for {to}"
+    ApproveEvent({"from": ctx.caller, "to": to, "amount": amount})
 
 
 @export
@@ -51,7 +51,7 @@ def transfer_from(amount: float, to: str, main_account: str):
     balances[main_account] -= amount
     balances[to] += amount
 
-    return f"Sent {amount} to {to} from {main_account}"
+    TransferEvent({"from": main_account, "to": to, "amount": amount})
 
 
 @export
@@ -71,10 +71,10 @@ def permit(owner: str, spender: str, value: float, deadline: str, signature: str
     assert now < deadline, 'Permit has expired.'
     assert crypto.verify(owner, permit_msg, signature), 'Invalid signature.'
 
-    balances[owner, spender] += value
+    balances[owner, spender] = value
     permits[permit_hash] = True
 
-    return f"Permit granted for {value} to {spender} from {owner}"
+    ApproveEvent({"from": owner, "to": spender, "amount": value})
 
 
 def construct_permit_msg(owner: str, spender: str, value: float, deadline: str):
