@@ -5,7 +5,6 @@ permits = Hash()
 TransferEvent = LogEvent(event="Transfer", params={"from":{'type':str, 'idx':True}, "to": {'type':str, 'idx':True}, "amount": {'type':(int, float, decimal)}})
 ApproveEvent = LogEvent(event="Approve", params={"from":{'type':str, 'idx':True}, "to": {'type':str, 'idx':True}, "amount": {'type':(int, float, decimal)}})
 
-
 @construct
 def seed():
     balances[ctx.caller] = 1_000_000
@@ -35,8 +34,8 @@ def transfer(amount: float, to: str):
 
 @export
 def approve(amount: float, to: str):
-    assert amount > 0, 'Cannot send negative balances!'
-    balances[ctx.caller, to] += amount
+    assert amount >= 0, 'Cannot approve negative balances!'
+    balances[ctx.caller, to] = amount
 
     ApproveEvent({"from": ctx.caller, "to": to, "amount": amount})
 
@@ -68,6 +67,7 @@ def permit(owner: str, spender: str, value: float, deadline: str, signature: str
     permit_hash = hashlib.sha3(permit_msg)
 
     assert permits[permit_hash] is None, 'Permit can only be used once.'
+    assert value >= 0, 'Cannot approve negative balances!'
     assert now < deadline, 'Permit has expired.'
     assert crypto.verify(owner, permit_msg, signature), 'Invalid signature.'
 

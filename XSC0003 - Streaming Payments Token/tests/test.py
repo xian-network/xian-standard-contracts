@@ -1,16 +1,18 @@
 import unittest
 from contracting.stdlib.bridge.time import Datetime
 from contracting.client import ContractingClient
+from contracting.storage.driver import Driver
 from xian_py.wallet import Wallet
 import datetime
 
 class TestCurrencyContract(unittest.TestCase):
     def setUp(self):
+
         # Called before every test, bootstraps the environment.
         self.client = ContractingClient()
         self.client.flush()
 
-        with open("token_xsc003.py") as f:
+        with open("XSC0003.py") as f:
             code = f.read()
             self.client.submit(code, name="currency")
 
@@ -47,6 +49,7 @@ class TestCurrencyContract(unittest.TestCase):
         # THEN the balances should reflect the transfer correctly
         self.assertEqual(bob_balance, 100)
         self.assertEqual(sys_balance, 999_900)
+
 
     def test_change_metadata(self):
         # GIVEN a non-operator trying to change metadata
@@ -194,8 +197,9 @@ class TestCurrencyContract(unittest.TestCase):
         
         self.client.signer = sender
         # WHEN the stream is created
-        stream_id = self.currency.create_stream(receiver=receiver, rate=rate, begins=str(begins), closes=str(closes), signer=sender)
+        result = self.currency.create_stream(receiver=receiver, rate=rate, begins=str(begins), closes=str(closes), signer=sender, return_full_output=True)
         # THEN the stream should be active and have correct properties
+        stream_id = result['result']
         self.assertEqual(self.currency.streams[stream_id, 'status'], 'active')
         self.assertEqual(self.currency.streams[stream_id, 'begins'], begins)
         self.assertEqual(self.currency.streams[stream_id, 'closes'], closes)
@@ -203,6 +207,24 @@ class TestCurrencyContract(unittest.TestCase):
         self.assertEqual(self.currency.streams[stream_id, 'sender'], sender)
         self.assertEqual(self.currency.streams[stream_id, 'rate'], rate)
         self.assertEqual(self.currency.streams[stream_id, 'claimed'], 0)
+        
+        expected_event = {
+            'contract': 'currency',
+            'event': 'StreamCreated',
+            'signer': 'alice',
+            'caller': 'alice',
+            'data_indexed': {
+                'sender': 'alice',
+                'receiver': 'bob',
+                'stream_id': stream_id
+            },
+            'data': {
+                'rate': 10,
+                'start_time': '2023-01-01 00:00:00',
+                'end_time': '2023-12-31 00:00:00'
+            }
+        }
+        self.assertEqual(result['events'][0], expected_event)
 
     def test_create_stream_invalid_dates(self):
         # GIVEN a stream creation setup with invalid date ranges
@@ -310,6 +332,7 @@ class TestCurrencyContract(unittest.TestCase):
         self.assertEqual(self.currency.balances[receiver], seconds_in_period / 2)
         self.assertEqual(self.currency.balances[sender], 0)
 
+
     def test_receiver_can_finalize_stream(self):
         # GIVEN a stream setup where the receiver can finalize the stream
         sender = 'mary'
@@ -331,6 +354,7 @@ class TestCurrencyContract(unittest.TestCase):
         self.assertIn("Finalized", finalize_res)
         self.assertEqual(self.currency.streams[stream_id, 'status'], 'finalized')
         self.assertEqual(self.currency.streams[stream_id, 'claimed'], seconds_in_period)
+
 
     def test_sender_can_finalize_stream(self):
         # GIVEN a stream setup where the sender can finalize the stream
