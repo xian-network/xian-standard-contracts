@@ -1,6 +1,6 @@
 # XSC0001 Token Contract
 
-The `XSC001` token contract is a standardized smart contract developed for the Xian blockchain. This contract implements a basic token system with functionalities such as token transfer, approval mechanisms, and metadata management. It is designed to serve as a foundational component for building decentralized applications on the Xian network.
+The `XSC0001` token contract is a standardized smart contract developed for the Xian blockchain. This contract implements a basic token system with functionalities such as token transfer, approval mechanisms, and metadata management. It is designed to serve as a foundational component for building decentralized applications on the Xian network.
 
 ## Contract Overview
 
