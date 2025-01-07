@@ -75,10 +75,12 @@ def permit(owner: str, spender: str, value: float, deadline: str, signature: str
     permits[permit_hash] = True
 
     ApproveEvent({"from": owner, "to": spender, "amount": value})
+    
+    return permit_hash
 
 
 def construct_permit_msg(owner: str, spender: str, value: float, deadline: str):
-    return f"{owner}:{spender}:{value}:{deadline}:{ctx.this}"
+    return f"{owner}:{spender}:{value}:{deadline}:{ctx.this}:{chain_id}"
 
 
 def strptime_ymdhms(date_string: str) -> datetime.datetime:

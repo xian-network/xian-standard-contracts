@@ -28,17 +28,15 @@ def transfer(amount: float, to: str):
 
     balances[ctx.caller] -= amount
     balances[to] += amount
-
     TransferEvent({"from": ctx.caller, "to": to, "amount": amount})
 
 @export
 def approve(amount: float, to: str):
     assert amount >= 0, 'Cannot approve negative balances!'
+    
     balances[ctx.caller, to] = amount
-
     ApproveEvent({"from": ctx.caller, "to": to, "amount": amount})
-
-
+    
 
 @export
 def transfer_from(amount: float, to: str, main_account: str):
@@ -49,5 +47,4 @@ def transfer_from(amount: float, to: str, main_account: str):
     balances[main_account, ctx.caller] -= amount
     balances[main_account] -= amount
     balances[to] += amount
-
     TransferEvent({"from": main_account, "to": to, "amount": amount})

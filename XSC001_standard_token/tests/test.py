@@ -66,6 +66,20 @@ class TestCurrencyContract(unittest.TestCase):
         self.assertEqual(self.currency.balances["sys"], 999_900)
         remaining_allowance = self.currency.balances["sys", "bob"]
         self.assertEqual(remaining_allowance, 100)
+        
+
+    def test_approve_overwrites_previous_allowance(self):
+        # GIVEN an initial approval setup
+        self.currency.approve(amount=500, to="eve", signer="sys")
+        initial_allowance = self.currency.balances["sys", "eve"]
+        self.assertEqual(initial_allowance, 500)
+        
+        # WHEN a new approval is made
+        self.currency.approve(amount=200, to="eve", signer="sys")
+        new_allowance = self.currency.balances["sys", "eve"]
+        
+        # THEN the new allowance should overwrite the old one
+        self.assertEqual(new_allowance, 200)
 
 
 if __name__ == "__main__":
