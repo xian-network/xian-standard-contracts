@@ -12,7 +12,7 @@ Each contract in this repository follows a specific naming convention and standa
 
 ### Naming Convention
 
-- **XSC####**: The prefix "XSC" stands for Xian Standard Contract, followed by a numerical identifier indicating the sequence of the standard.
+- **XSC###**: The prefix "XSC" stands for Xian Standard Contract, followed by a numerical identifier indicating the sequence of the standard.
 
 ### Testing
 
