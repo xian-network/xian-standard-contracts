@@ -19,7 +19,10 @@ def seed():
 def change_metadata(key: str, value: Any):
     assert ctx.caller == metadata['operator'], 'Only operator can set metadata!'
     metadata[key] = value
-
+    
+@export
+def balance_of(account: str):
+    return balances[account]
 
 @export
 def transfer(amount: float, to: str):
