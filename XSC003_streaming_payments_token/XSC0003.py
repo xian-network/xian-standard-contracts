@@ -80,6 +80,7 @@ def seed():
     metadata["token_symbol"] = "TST"
     metadata["token_logo_url"] = "https://some.token.url/test-token.png"
     metadata["token_website"] = "https://some.token.url"
+    metadata["total_supply"] = balances[ctx.caller]
     metadata["operator"] = ctx.caller
 
 
