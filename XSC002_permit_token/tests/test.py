@@ -62,7 +62,7 @@ class TestCurrencyContract(unittest.TestCase):
         # Test approve
         self.currency.approve(amount=500, to="eve", signer="sys")
         # Test allowance
-        allowance = self.currency.approvals["sys", "eve"]
+        allowance = self.currency.balances["sys", "eve"]
         self.assertEqual(allowance, 500)
 
     def test_transfer_from_without_approval(self):
@@ -81,7 +81,7 @@ class TestCurrencyContract(unittest.TestCase):
         )
         self.assertEqual(self.currency.balances["bob"], 100)
         self.assertEqual(self.currency.balances["sys"], 999_900)
-        remaining_allowance = self.currency.approvals["sys", "bob"]
+        remaining_allowance = self.currency.balances["sys", "bob"]
         self.assertEqual(remaining_allowance, 100)
 
 
@@ -177,12 +177,12 @@ class TestCurrencyContract(unittest.TestCase):
     def test_approve_overwrites_previous_allowance(self):
         # GIVEN an initial approval setup
         self.currency.approve(amount=500, to="eve", signer="sys")
-        initial_allowance = self.currency.approvals["sys", "eve"]
+        initial_allowance = self.currency.balances["sys", "eve"]
         self.assertEqual(initial_allowance, 500)
         
         # WHEN a new approval is made
         self.currency.approve(amount=200, to="eve", signer="sys")
-        new_allowance = self.currency.approvals["sys", "eve"]
+        new_allowance = self.currency.balances["sys", "eve"]
         
         # THEN the new allowance should overwrite the old one
         self.assertEqual(new_allowance, 200)
@@ -203,7 +203,7 @@ class TestCurrencyContract(unittest.TestCase):
             self.currency.permit(owner=public_key, spender=spender, value=initial_value, deadline=deadline, signature=signature)
             
             # Verify initial allowance
-            initial_allowance = self.currency.approvals[public_key, spender]
+            initial_allowance = self.currency.balances[public_key, spender]
             self.assertEqual(initial_allowance, initial_value)
             
             # WHEN a new permit is granted
@@ -212,7 +212,7 @@ class TestCurrencyContract(unittest.TestCase):
             self.currency.permit(owner=public_key, spender=spender, value=new_value, deadline=deadline, signature=signature)
             
             # THEN the new allowance should overwrite the old one
-            new_allowance = self.currency.approvals[public_key, spender]
+            new_allowance = self.currency.balances[public_key, spender]
             self.assertEqual(new_allowance, new_value)
 
 

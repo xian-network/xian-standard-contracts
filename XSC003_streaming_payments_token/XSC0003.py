@@ -1,5 +1,4 @@
 balances = Hash(default_value=0)
-approvals = Hash(default_value=0)
 metadata = Hash()
 permits = Hash()
 streams = Hash()
@@ -104,7 +103,7 @@ def transfer(amount: float, to: str):
 @export
 def approve(amount: float, to: str):
     assert amount >= 0, "Cannot approve negative balances."
-    approvals[ctx.caller, to] = amount
+    balances[ctx.caller, to] = amount
 
     ApproveEvent({"from": ctx.caller, "to": to, "amount": amount})
 
@@ -113,11 +112,11 @@ def approve(amount: float, to: str):
 def transfer_from(amount: float, to: str, main_account: str):
     assert amount > 0, "Cannot send negative balances."
     assert (
-        approvals[main_account, ctx.caller] >= amount
+        balances[main_account, ctx.caller] >= amount
     ), f"Not enough coins approved to send. You have {balances[main_account, ctx.caller]} and are trying to spend {amount}"
     assert balances[main_account] >= amount, "Not enough coins to send."
 
-    approvals[main_account, ctx.caller] -= amount
+    balances[main_account, ctx.caller] -= amount
     balances[main_account] -= amount
     balances[to] += amount
 
@@ -143,7 +142,7 @@ def permit(owner: str, spender: str, value: float, deadline: str, signature: str
     assert value >= 0, "Cannot approve negative balances!"
     assert crypto.verify(owner, permit_msg, signature), "Invalid signature."
 
-    approvals[owner, spender] = value
+    balances[owner, spender] = value
     permits[permit_hash] = True
 
     ApproveEvent({"from":owner, "to":spender, "amount":value})
