@@ -22,8 +22,8 @@ def change_metadata(key: str, value: Any):
     metadata[key] = value
     
 @export
-def balance_of(account: str):
-    return balances[account]
+def balance_of(address: str):
+    return balances[address]
 
 @export
 def transfer(amount: float, to: str):
