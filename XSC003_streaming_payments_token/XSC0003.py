@@ -289,16 +289,15 @@ def change_close_time(stream_id: str, new_close_time: str):
 
     sender = streams[stream_id, SENDER_KEY]
     receiver = streams[stream_id, RECEIVER_KEY]
+    begins = streams[stream_id, BEGIN_KEY]
 
     assert ctx.caller == sender, "Only sender can change the close time of a stream."
 
-    if (
-        new_close_time < streams[stream_id, BEGIN_KEY]
-        and now < streams[stream_id, BEGIN_KEY]
-    ):
-        streams[stream_id, CLOSE_KEY] = streams[stream_id, BEGIN_KEY] 
-    elif new_close_time <= now:
+    # If new close time is in the past or before begin time, close immediately or at begin time
+    if new_close_time <= now:
         streams[stream_id, CLOSE_KEY] = now
+    elif new_close_time < begins:
+        streams[stream_id, CLOSE_KEY] = begins
     else:
         streams[stream_id, CLOSE_KEY] = new_close_time
 
@@ -307,7 +306,7 @@ def change_close_time(stream_id: str, new_close_time: str):
             "receiver": receiver,
             "sender": sender,
             "stream_id": stream_id,
-            "time": str(new_close_time),
+            "time": str(streams[stream_id, CLOSE_KEY]),
         }
     )
 
@@ -336,7 +335,7 @@ def finalize_stream(stream_id: str):
     rate = streams[stream_id, RATE_KEY]
     claimed = streams[stream_id, CLAIMED_KEY]
 
-    assert now <= closes, "Stream has not closed yet."
+    assert closes <= now, "Stream has not closed yet."
 
     outstanding_balance = calc_outstanding_balance(begins, closes, rate, claimed)
 
